@@ -1,0 +1,16 @@
+• Root cause: MOS / RRF aborts if a G2 or G3 command is generated without I, J, K, or R parameters
+• Observed failure: CAM + post intermittently produced bare arc commands (e.g. G3 X… Z… F…)
+• Fix approach: eliminate all native arc output from the post processor
+• Change made: force linearization of every circular move
+• Modified functions:
+– onCircular() → always linearize
+– outputArcCommand() → always linearize
+– outputArcRadiusCommand() → always linearize
+– outputFullCircleCommand() → always linearize
+• Resulting G-code:
+– Only G0 / G1 commands
+– No G2 / G3 present
+• Effect on MOS:
+– Error G2/G3: no I J K or R parameter cannot occur
+– Job runs reliably
+• Side effect: slightly larger G-code file (expected, harmless)
